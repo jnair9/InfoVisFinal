@@ -197,15 +197,27 @@ function showPieChart(collegeData) {
     var arc = d3.arc() 
         .innerRadius(0)
         .outerRadius(Math.min(300, 300) / 2);
-    
-    pieSVG.selectAll('path').data(pieData)
+
+    var arcs = pieSVG.selectAll('path').data(pieData)
         .enter()
         .append('path')
+        .attr("stroke-width", 2)
+        .each(function(d) { this._current = d; })
         .attr('d', arc)
-        .attr('fill', d => color(d.data.race))
+        .attr("opacity", 0)
+        .transition()
+        .duration(1000)
+        .attr("fill", d => color(d.data.race))
+        .attrTween('d', function(d){
+            var interp = d3.interpolate({startAngle: 0, endAngle: 0}, d);
+            return function(t) {
+                return arc(interp(t));
+            };
+        })
+        .attr("opacity", 1);
+
 
     pieSVG.selectAll('text').data(pieData)
-        .data(pieData)
         .enter()
         .append('text')
         .attr( 'transform', d => 'translate(' + arc.centroid(d) + ')')
@@ -213,6 +225,11 @@ function showPieChart(collegeData) {
         .style('font-size', 12)
         .style('fill', 'white')
         .text(d => d.data.race)
+        .attr("opacity", 0)
+        .transition()
+        .delay(1000)
+        .duration(500)
+        .attr("opacity", 1);
 
     //legend for pie chart
     var legend = pieSVG.selectAll('.legend-items').data(pieData)
@@ -233,7 +250,12 @@ function showPieChart(collegeData) {
         .text(d => d.data.race);
 
 
-    d3.select('#pieChartOverlay').style('display', 'flex');
+    d3.select('#pieChartOverlay')
+    .style('display', 'flex')
+    .style("opacity", 0)
+    .transition()
+    .duration(500)
+    .style("opacity", 1);
 }
 //X button logic 
 d3.select('#closePieChart').on('click', function() {
