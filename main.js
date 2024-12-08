@@ -213,6 +213,26 @@ function showPieChart(collegeData) {
         .style('font-size', 12)
         .style('fill', 'white')
         .text(d => d.data.race)
+
+    //legend for pie chart
+    var legend = pieSVG.selectAll('.legend-items').data(pieData)
+        .enter()
+        .append('g')
+        .attr('class', 'legend-items')
+        .attr('transform', (d, i) => 'translate(160,' + (i * 22 - 100) + ')');
+
+    legend.append('rect')
+        .attr('width', 18)
+        .attr('height', 18)
+        .attr('fill', d => color(d.data.race))
+        .attr('stroke', 'black');
+
+    legend.append('text')
+        .attr('x', 18 + 4)
+        .attr('y', 18 - 4)
+        .text(d => d.data.race);
+
+
     d3.select('#pieChartOverlay').style('display', 'flex');
 }
 //X button logic 

@@ -44,7 +44,7 @@ h1 {
 
 text {
     font-size: 12px;
-    fill: grey;
+    fill: black;
 }
 
 .tooltip {
@@ -82,7 +82,7 @@ svg {
     position: relative;
     padding: 20px;
     border-radius: 5px;
-    width: 350px;
+    width: 400px;
     margin: 100px auto;
     text-align: center;
 }
