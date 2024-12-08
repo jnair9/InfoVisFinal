@@ -12,15 +12,20 @@ function dataPreprocessor(row) {
     return {
         region: row.Region,
         school: row.Name,
-        students: +row['Undergrad Population']
+        students: +row['Undergrad Population'],
+        white: +row['% White'],
+        black: +row['% Black'],
+        asian: +row['% Asian'],
+        hispanic: +row['% Hispanic']
     };
 }
 
 var svg = d3.select('svg');
 
 // Get layout parameters
-var svgWidth = +svg.attr('width');
+var svgWidth = document.getElementById('chart-container').offsetWidth - 10;
 var svgHeight = +svg.attr('height');
+svg.attr('width', svgWidth);
 
 var padding = {t: 60, r: 40, b: 60, l: 400};
 
@@ -62,8 +67,21 @@ svg.append('text')
     .text('College Names')
     .style('font-size', '15px')
 
+d3.csv('Colleges.csv', dataPreprocessor).then(function(dataset) {
+    var regions = Array.from(new Set(dataset.map(d => d.region)));
+
+    var select = d3.select('#regionSelect');
+    regions.forEach(region => {
+        select.append('option')
+            .attr('value', region)
+            .text(region)
+    })
+    updateChart(regions[0])
+});
+
 //custom color scale for enter bars
 var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+var tooltip = d3.select("#tooltip");
 
 function updateChart(selectedRegion) {
     // Create a filtered array of colleges based on the filterKey
@@ -87,7 +105,31 @@ function updateChart(selectedRegion) {
             .attr('y', d => yScale(d.school))
             .attr('height', yScale.bandwidth())
             .attr('width', 0)
-            .style('fill', d => colorScale(d.school));
+            .style('fill', d => colorScale(d.school))
+            .on('mouseover', function(event, d) {
+                var white_percentage = (d.white * 100).toFixed(1) + '%';
+                var black_percentage = (d.black * 100).toFixed(1) + '%';
+                var asian_percentage = (d.asian * 100).toFixed(1) + '%';
+                var hispanic_percentage = (d.hispanic * 100).toFixed(1) + '%';
+
+                tooltip.style('opacity', 1)
+                    .html(
+                        `<strong>${d.school}</strong><br/>
+                        White: ${white_percentage}<br/>
+                        Black: ${black_percentage}<br/>
+                        Asian: ${asian_percentage}<br/>
+                        Hispanic: ${hispanic_percentage}<br/>`
+                    )
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 20) + "px");
+            })
+            .on('mousemove', function(event) {
+                tooltip.style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 20) + "px");
+            })
+            .on('mouseout', function() {
+                tooltip.style("opacity", 0);
+            })
 
         bars.merge(enterBars).transition()
             .duration(750) 
@@ -101,18 +143,6 @@ function updateChart(selectedRegion) {
             .remove()
     });
 }
-d3.csv('Colleges.csv', dataPreprocessor).then(function(dataset) {
-    var regions = Array.from(new Set(dataset.map(d => d.region)));
-
-    var select = d3.select('#regionSelect');
-    regions.forEach(region => {
-        select.append('option')
-            .attr('value', region)
-            .text(region)
-    })
-    updateChart(regions[0])
-});
-
 
 
 // Remember code outside of the data callback function will run before the data loads
