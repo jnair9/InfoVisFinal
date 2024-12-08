@@ -16,7 +16,8 @@ function dataPreprocessor(row) {
         white: +row['% White'],
         black: +row['% Black'],
         asian: +row['% Asian'],
-        hispanic: +row['% Hispanic']
+        hispanic: +row['% Hispanic'],
+        other: 1 - (+row['% White'] + +row['% Black'] + +row['% Asian'] + +row['% Hispanic'])
     };
 }
 
@@ -135,6 +136,7 @@ function updateChart(selectedRegion) {
                 var black_percentage = (d.black * 100).toFixed(1) + '%';
                 var asian_percentage = (d.asian * 100).toFixed(1) + '%';
                 var hispanic_percentage = (d.hispanic * 100).toFixed(1) + '%';
+                var other = (d.other * 100).toFixed(1) + '%';
 
                 tooltip.style('opacity', 1)
                     .html(
@@ -142,7 +144,8 @@ function updateChart(selectedRegion) {
                         White: ${white_percentage}<br/>
                         Black: ${black_percentage}<br/>
                         Asian: ${asian_percentage}<br/>
-                        Hispanic: ${hispanic_percentage}<br/>`
+                        Hispanic: ${hispanic_percentage}<br/>
+                        Other: ${other}<br/>`
                     )
                     .style("left", (event.pageX + 10) + "px")
                     .style("top", (event.pageY - 20) + "px");
@@ -154,7 +157,9 @@ function updateChart(selectedRegion) {
             .on('mouseout', function() {
                 tooltip.style("opacity", 0);
             })
-
+            .on('click', function(event, d) {
+                showPieChart(d);
+            });
         bars.merge(enterBars).transition()
             .duration(750) 
             .attr('y', d => yScale(d.school))
@@ -166,7 +171,74 @@ function updateChart(selectedRegion) {
             .attr('width', 0)
             .remove()
     });
+    
 }
+//function to display the pie chart when bar is clicked
+function showPieChart(collegeData) {
+    var data = [
+        {race: 'White', percentage: collegeData.white},
+        {race: 'Black', percentage: collegeData.black},
+        {race: 'Asian', percentage: collegeData.asian},
+        {race: 'Hispanic', percentage: collegeData.hispanic},
+        {race: 'Other', percentage: collegeData.other}
+    ];
+
+    var pie = d3.pie().value(d => d.percentage);
+    var pieData = pie(data);
+    d3.select('#pieChartContainer').selectAll('svg').remove();
+    //custom color scale for the pie chart
+    var color = d3.scaleOrdinal(d3.schemeCategory10);
+    var pieSVG = d3.select('#pieChartContainer').append('svg')
+        .attr('width', 300)
+        .attr('height', 300)
+        .append('g')
+        .attr('transform', 'translate(' + 300 / 2 + ',' + 300 / 2 + ')');
+    
+    var arc = d3.arc() 
+        .innerRadius(0)
+        .outerRadius(Math.min(300, 300) / 2);
+    
+    pieSVG.selectAll('path').data(pieData)
+        .enter()
+        .append('path')
+        .attr('d', arc)
+        .attr('fill', d => color(d.data.race))
+
+    pieSVG.selectAll('text').data(pieData)
+        .data(pieData)
+        .enter()
+        .append('text')
+        .attr( 'transform', d => 'translate(' + arc.centroid(d) + ')')
+        .attr('text-anchor', 'middle')
+        .style('font-size', 12)
+        .style('fill', 'white')
+        .text(d => d.data.race)
+
+    //legend for pie chart
+    var legend = pieSVG.selectAll('.legend-items').data(pieData)
+        .enter()
+        .append('g')
+        .attr('class', 'legend-items')
+        .attr('transform', (d, i) => 'translate(160,' + (i * 22 - 100) + ')');
+
+    legend.append('rect')
+        .attr('width', 18)
+        .attr('height', 18)
+        .attr('fill', d => color(d.data.race))
+        .attr('stroke', 'black');
+
+    legend.append('text')
+        .attr('x', 18 + 4)
+        .attr('y', 18 - 4)
+        .text(d => d.data.race);
+
+
+    d3.select('#pieChartOverlay').style('display', 'flex');
+}
+//X button logic 
+d3.select('#closePieChart').on('click', function() {
+    d3.select('#pieChartOverlay').style('display', 'none');
+});
 
 
 // Remember code outside of the data callback function will run before the data loads
