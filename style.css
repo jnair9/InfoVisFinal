@@ -1,0 +1,60 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+#container {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#controls {
+    margin-bottom: 20px;
+}
+
+#categorySelect {
+    font-size: 16px;
+    padding: 5px;
+}
+
+/* Chart styles */
+#chart-container {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    padding: 10px;
+}
+
+.x-axis-title,
+.y-axis-title {
+    font-size: 14px;
+    fill: #333;
+}
+
+.bar {
+    fill: steelblue;
+}
+
+.x-axis path,
+.x-axis line,
+.y-axis path,
+.y-axis line {
+    stroke: #ccc;
+    shape-rendering: crispEdges;
+}
+
+text {
+    font-size: 12px;
+    fill: #333;
+}
+
+
