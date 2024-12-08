@@ -71,7 +71,7 @@ svg.append('text')
     .style('font-weight', 'bold');
 
 d3.csv('Colleges.csv', dataPreprocessor).then(function(dataset) {
-    var regions = Array.from(new Set(dataset.map(d => d.region)));
+    var regions = Array.from(new Set(dataset.map(d => d.region).filter(region => region && region.trim() !== "")));
 
     var select = d3.select('#regionSelect');
     regions.forEach(region => {
