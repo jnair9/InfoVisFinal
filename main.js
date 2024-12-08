@@ -56,16 +56,18 @@ svg.append('text')
     .attr('y', svgHeight - 10)
     .attr('text-anchor', 'middle')
     .text('Number of Students')
-    .style('font-size', '15px')
+    .style('font-size', '25px')
+    .style('font-weight', 'bold');
 
 svg.append('text')
     .attr('class', 'y-axis-title')
     .attr('x', -(svgHeight / 2))
-    .attr('y', 20)
+    .attr('y', 40)
     .attr('text-anchor', 'middle')
     .attr('transform', 'rotate(-90)')
     .text('College Names')
-    .style('font-size', '15px')
+    .style('font-size', '25px')
+    .style('font-weight', 'bold');
 
 d3.csv('Colleges.csv', dataPreprocessor).then(function(dataset) {
     var regions = Array.from(new Set(dataset.map(d => d.region)));

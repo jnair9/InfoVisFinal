@@ -1,9 +1,9 @@
-/* General styles */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9;
+    background-image: url("https://media.istockphoto.com/id/929023224/vector/seamless-background-with-books.jpg?s=612x612&w=0&k=20&c=suJcI7JPdWMAB32Dlr3V1CPs3FCfgFkhSSuFuQN8bzw=");
 }
 
 #container {
@@ -14,7 +14,7 @@ body {
 }
 
 h1 {
-    color: #333;
+    color: black;
     margin-bottom: 20px;
 }
 
@@ -23,35 +23,27 @@ h1 {
 }
 
 #categorySelect {
-    font-size: 16px;
+    font-size: 15px;
     padding: 5px;
 }
 
-/* Chart styles */
 #chart-container {
-    border: 1px solid #ccc;
-    background-color: #fff;
+    border: 1px solid grey;
+    background-color: white;
     padding: 10px;
 }
-
-.x-axis-title,
-.y-axis-title {
-    font-size: 25px;
-    fill: #333;
-}
-
 
 .x-axis path,
 .x-axis line,
 .y-axis path,
 .y-axis line {
-    stroke: #ccc;
+    stroke: grey;
     shape-rendering: crispEdges;
 }
 
 text {
     font-size: 12px;
-    fill: #333;
+    fill: grey;
 }
 
 .tooltip {
