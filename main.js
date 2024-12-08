@@ -135,6 +135,7 @@ function updateChart(selectedRegion) {
                 var black_percentage = (d.black * 100).toFixed(1) + '%';
                 var asian_percentage = (d.asian * 100).toFixed(1) + '%';
                 var hispanic_percentage = (d.hispanic * 100).toFixed(1) + '%';
+                var other = (100 - ((d.white * 100) + (d.black * 100) + (d.asian * 100) + (d.hispanic * 100))).toFixed(1) + '%';
 
                 tooltip.style('opacity', 1)
                     .html(
@@ -142,7 +143,8 @@ function updateChart(selectedRegion) {
                         White: ${white_percentage}<br/>
                         Black: ${black_percentage}<br/>
                         Asian: ${asian_percentage}<br/>
-                        Hispanic: ${hispanic_percentage}<br/>`
+                        Hispanic: ${hispanic_percentage}<br/>
+                        Other: ${other}<br/>`
                     )
                     .style("left", (event.pageX + 10) + "px")
                     .style("top", (event.pageY - 20) + "px");
