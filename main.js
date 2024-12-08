@@ -91,11 +91,33 @@ function updateChart(selectedRegion) {
         // **** Draw and Update your chart here ****
         var filteredRegions = dataset.filter(d => d.region === selectedRegion)
 
+        //logic for chart height
+        var barHeight = 30;
+        var numColleges = filteredRegions.length;
+        var newChartHeight = numColleges * barHeight;
+
+        var newSVGHeight = newChartHeight + padding.t + padding.b;
+        svg.attr('height', newSVGHeight);
+        chartHeight = newChartHeight;
+        yScale.range([0, chartHeight]);
+        xAxisGroup.attr('transform', 'translate(0,' + chartHeight + ')');
+
+        svg.select('.x-axis-title')
+            .attr('x', svgWidth / 2)
+            .attr('y', newSVGHeight - 10);
+
+        svg.select('.y-axis-title')
+            .attr('x', -(newSVGHeight / 2))
+            .attr('y', 40);
+
         //updating the axis scales and axis
         xScale.domain([0, d3.max(filteredRegions, d => d.students)]);
         yScale.domain(filteredRegions.map(d => d.school));
         xAxisGroup.transition().duration(750).call(xAxis);
         yAxisGroup.transition().duration(750).call(yAxis);
+  
+
+
 
 
         var bars = chartG.selectAll('.bar').data(filteredRegions, d => d.school);
